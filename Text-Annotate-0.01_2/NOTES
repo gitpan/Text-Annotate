@@ -1,0 +1,53 @@
+# hmm, doesn't work
+
+Total Elapsed Time = 12.11363 Seconds
+  User+System Time = 8.232734 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 55.9   4.609  3.310  47418   0.0001 0.0001  Text::Annotate::DataSource::index_
+                                             lookup
+ 40.1   3.305  3.305      4   0.8262 0.8261  Text::Annotate::WordScan::_canon
+ 30.9   2.547  2.547      2   1.2734 1.2734  Text::Annotate::WordScan::_findwor
+                                             ds
+
+Weird. index_lookup I expect - huge number of calls to it. The others
+are mysterious... oh, no, _canon is also called on every single phrase.
+
+Remove some crap from canonicaliser: down to 7.35 U+S sec.
+
+Total Elapsed Time = 7.320437 Seconds
+  User+System Time = 7.353749 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 62.5   4.601  3.283  47418   0.0001 0.0001  Text::Annotate::DataSource::index_
+                                             lookup
+ 34.3   2.523  2.523      2   1.2617 1.2617  Text::Annotate::WordScan::_findwor
+                                             ds
+ 33.3   2.453  2.453      4   0.6133 0.6133  Text::Annotate::WordScan::_canon
+
+Switch to full-scale-call-with-list processing ... (probably memory hog)
+
+Total Elapsed Time = 7.415670 Seconds
+  User+System Time = 6.391828 Seconds
+Exclusive Times
+%Time ExclSec CumulS #Calls sec/call Csec/c  Name
+ 39.7   2.539  2.539      2   1.2695 1.2695  Text::Annotate::WordScan::_findwor
+                                             ds
+ 38.5   2.461  2.461      4   0.6152 0.6152  Text::Annotate::WordScan::_canon
+ 12.2   0.781  0.781      1   0.7812 0.7812  Text::Annotate::DataSource::index_
+                                             lookup
+
+That's odd: i_l cut from 4.6 to 2.5sec, and overall time is SIMILAR!
+Must be mem maintenance overhead or somesuch.
+Surprise result: turning documents into token streams takes 90% of the time,
+compared with looking the tokens up. (Admittedly a 2-element hash is
+very much cheating).
+
+OK - now turned key parts into iterator: and it takes 7.5sec.
+A bit less with a bigger buffer size.
+Grr! What's happening to memory? 3M.
+
+Are we sure it's doing the same thing? -- count lookups. YES. (Not in exactly
+the same order).
+
+Yay! Now 4sec.

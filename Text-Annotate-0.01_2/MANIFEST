@@ -1,0 +1,13 @@
+MANIFEST
+LICENSE
+README
+Todo
+Changes
+lib/Text/Annotate.pm
+lib/Text/Annotate/DataSource/Kwiki.pm
+lib/Text/Annotate/DataSource.pm
+lib/Text/Annotate/HTMLWriter.pm
+lib/Text/Annotate/WordScan.pm
+lib/Text/Annotate/KwikiTemplate.pm
+t/wordscan.t
+Makefile.PL

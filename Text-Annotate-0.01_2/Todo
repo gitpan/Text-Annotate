@@ -1,0 +1,7 @@
+TODO list for Perl module Text::Annotate
+
+- Deploy alpha version, see how it goes...
+- Throw enough content at Text::Annotate::WordScan and check
+  its performance.
+
+
